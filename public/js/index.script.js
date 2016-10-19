@@ -1,6 +1,6 @@
 'use strict';
 
-$(document).ready(() => {
+$(() => {
 
 	const ROOT_URL = 'http://jsonplaceholder.typicode.com';
 
@@ -8,6 +8,7 @@ $(document).ready(() => {
 	const handleError = (label) => {
 		return (err) => {
 				console.debug(`Error @ ${label}`, err);
+				return false;
 		}
 	}
 
@@ -41,8 +42,10 @@ $(document).ready(() => {
 			})
 			.then((article) => {
 				// if there's a callback, invoke it
-				if(_onLoaded) _onLoaded(article);
-				return false;
+				if(_onLoaded){
+					return _onLoaded(article);
+				};
+				return null;
 			})
 			.fail(handleError('loadArticle'));
 	}
@@ -56,7 +59,8 @@ $(document).ready(() => {
 			// append each article into the element
 			articles.forEach((article) => {
 				articles_elm.append(buildArticleHTML(article));
-			})
+			});
+			return null;
 		}
 
 		// make the AJAX call to load all the articles from the API
@@ -70,6 +74,7 @@ $(document).ready(() => {
 		$.get(`${ROOT_URL}/posts/${article_id}/coments`)
 			.then((comments) => {
 				console.log(comments);
+				return null;
 			})
 			.fail(handleError('loadArticleComments'));
 	}
@@ -77,7 +82,6 @@ $(document).ready(() => {
 	// create a click listener for any article preview
 	$('#articles').on('click', '.post-preview > a', (ev) => {
 	  ev.preventDefault();
-		const article_id = $(this).parent().attr('data-article-id');
 		console.log(`Article #${article_id} has been clicked.`);
 	});
 
